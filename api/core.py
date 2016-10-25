@@ -77,7 +77,7 @@ def parse_event(json_data, post_content=''):
             author = json_data['comment']['author']['displayName']
             comment = json_data['comment']['body']
             if issue_event_type_name in ('issue_commented',):
-                post_content += '\n##### New comment from [ ' + author + ' ]:\n\n' + comment
+                post_content += '\n##### New comment: from [ ' + author + ' ]\n\n' + comment
             elif issue_event_type_name in ('issue_comment_deleted',):
                 post_content += '\n##### Removed comment from [ ' + author + ' ]:\n\n' + comment
 
