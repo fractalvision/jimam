@@ -54,13 +54,13 @@ def parse_event(json_data, post_content=''):
 
         if webevent.endswith('created'):
             post_content = '##### ' + display_name + ' has created issue: [ ' + issue_id + ' ] ' + issue_url + '\n\n' \
-                           + summary + '\n\nPriority: ' + priority + ', assignee: ' + assignee + '\r\n'
+                           + '###### ', + summary + '\n\nPriority: ' + priority + ', assignee: ' + assignee + '\r\n'
         elif webevent.endswith('updated'):
             post_content = '##### ' + display_name + ' has updated issue: [ ' + issue_id + ' ] ' + issue_url + '\n\n' \
-                           + summary + '\n\nPriority: ' + priority + ', assignee: ' + assignee + '\r\n'
+                           + '###### ', +  summary + '\n\nPriority: ' + priority + ', assignee: ' + assignee + '\r\n'
         elif webevent.endswith('deleted'):
             post_content = '##### ' + display_name + ' has deleted issue: [ ' + issue_id + ' ] ' + issue_url + '\n\n' \
-                           + summary + '\n\nPriority: ' + priority + ', assignee: ' + assignee + '\r\n'
+                           + '###### ', +  summary + '\n\nPriority: ' + priority + ', assignee: ' + assignee + '\r\n'
         else:
             log('unhandled event: {}, {}'.format(webevent, json_data), save=True)
 
@@ -74,11 +74,10 @@ def parse_event(json_data, post_content=''):
                         post_content += ''.join([value, ' > ' if field.startswith('from') else '' + '\n\n'])
 
         if 'comment' in json_data.keys():
-            author = json_data['comment']['author']['displayName']
             comment = json_data['comment']['body']
             if issue_event_type_name in ('issue_commented',):
-                post_content += '\n##### New comment: from [ ' + author + ' ]\n\n' + comment
+                post_content += '\n##### New comment:\n\n' + comment
             elif issue_event_type_name in ('issue_comment_deleted',):
-                post_content += '\n##### Removed comment from [ ' + author + ' ]:\n\n' + comment
+                post_content += '\n##### Removed comment:\n\n' + comment
 
     return post_content
