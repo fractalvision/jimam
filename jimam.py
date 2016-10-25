@@ -6,6 +6,7 @@ into Mattermost format, and relay them to a target webhook"""
 from api.core import *
 from flask import Flask, request
 from flask_restful import Api, Resource
+from werkzeug.contrib.fixers import ProxyFix
 
 __author__ = 'https://github.com/fractalvision/'
 
@@ -29,5 +30,6 @@ class Jimam(Resource):
 
 api.add_resource(Jimam, '/jimam{}'.format(API_ROOT))
 
+app.wsgi_app = ProxyFix(app.wsgi_app)
 if __name__ == '__main__':
     app.run(host=JIMAM_IP, port=JIMAM_PORT, debug=DEBUG)
