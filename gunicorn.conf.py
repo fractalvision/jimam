@@ -1,4 +1,6 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
+"""JIMAM: gunicorn WSGI-application config"""
 
 from api.settings import *
 
