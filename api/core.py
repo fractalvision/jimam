@@ -47,19 +47,20 @@ def parse_event(json_data, post_content=''):
         issue_id = json_data['issue']['key']
         issue_rest_url = json_data['issue']['self']
         issue_url = '{}/browse/{}'.format(get_url.match(issue_rest_url).group(1), issue_id)
-        priority = json_data['issue']['fields']['priority']['name'] if json_data['issue']['fields'][
-            'priority'] else 'empty'
+        priority = json_data['issue']['fields']['priority']['name'] if json_data['issue']['fields']['priority'] else 'empty'
         issue_event_type_name = json_data['issue_event_type_name']
         summary = json_data['issue']['fields']['summary']
-        assignee = json_data['issue']['fields']['assignee']['displayName'] if json_data['issue']['fields'][
-            'assignee'] else 'empty'
+        assignee = json_data['issue']['fields']['assignee']['displayName'] if json_data['issue']['fields']['assignee'] else 'empty'
 
         if webevent.endswith('created'):
-            post_content = '##### ' + display_name + ' has created issue: [ ' + issue_id + ' ] ' + issue_url + '\n\n' + summary + '\n\nPriority: ' + priority + ', assignee: ' + assignee + '\r\n'
+            post_content = '##### ' + display_name + ' has created issue: [ ' + issue_id + ' ] ' + issue_url + '\n\n' \
+                           + summary + '\n\nPriority: ' + priority + ', assignee: ' + assignee + '\r\n'
         elif webevent.endswith('updated'):
-            post_content = '##### ' + display_name + ' has updated issue: [ ' + issue_id + ' ] ' + issue_url + '\n\n' + summary + '\n\nPriority: ' + priority + ', assignee: ' + assignee + '\r\n'
+            post_content = '##### ' + display_name + ' has updated issue: [ ' + issue_id + ' ] ' + issue_url + '\n\n' \
+                           + summary + '\n\nPriority: ' + priority + ', assignee: ' + assignee + '\r\n'
         elif webevent.endswith('deleted'):
-            post_content = '##### ' + display_name + ' has updated issue: [ ' + issue_id + ' ] ' + issue_url + '\n\n' + summary + '\n\nPriority: ' + priority + ', assignee: ' + assignee + '\r\n'
+            post_content = '##### ' + display_name + ' has deleted issue: [ ' + issue_id + ' ] ' + issue_url + '\n\n' \
+                           + summary + '\n\nPriority: ' + priority + ', assignee: ' + assignee + '\r\n'
         else:
             log('unhandled event: {}, {}'.format(webevent, json_data), save=True)
 
