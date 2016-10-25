@@ -54,13 +54,13 @@ def parse_event(json_data, post_content=''):
 
         if webevent.endswith('created'):
             post_content = '##### ' + display_name + ' has created issue: [ ' + issue_id + ' ] ' + issue_url + '\n\n' \
-                           + '###### ', + summary + '\n\nPriority: ' + priority + ', assignee: ' + assignee + '\r\n'
+                           + '###### ' + summary + '\n\nPriority: ' + priority + ', assignee: ' + assignee + '\r\n'
         elif webevent.endswith('updated'):
             post_content = '##### ' + display_name + ' has updated issue: [ ' + issue_id + ' ] ' + issue_url + '\n\n' \
-                           + '###### ', +  summary + '\n\nPriority: ' + priority + ', assignee: ' + assignee + '\r\n'
+                           + '###### ' +  summary + '\n\nPriority: ' + priority + ', assignee: ' + assignee + '\r\n'
         elif webevent.endswith('deleted'):
             post_content = '##### ' + display_name + ' has deleted issue: [ ' + issue_id + ' ] ' + issue_url + '\n\n' \
-                           + '###### ', +  summary + '\n\nPriority: ' + priority + ', assignee: ' + assignee + '\r\n'
+                           + '###### ' +  summary + '\n\nPriority: ' + priority + ', assignee: ' + assignee + '\r\n'
         else:
             log('unhandled event: {}, {}'.format(webevent, json_data), save=True)
 
