@@ -10,7 +10,6 @@ import requests
 
 __author__ = 'https://github.com/fractalvision/'
 
-
 try:
     os.makedirs(os.path.join(BASEDIR, 'log'))
 except OSError:
@@ -43,21 +42,32 @@ def parse_event(json_data, post_content=''):
         issue_rest_url = json_data['issue']['self']
         get_url = re.compile(r'(.*?)\/rest\/api\/.*')
         issue_url = '{}/browse/{}'.format(get_url.match(issue_rest_url).group(1), issue_id)
-        priority = json_data['issue']['fields']['priority']['name'] if json_data['issue']['fields']['priority'] else 'empty'
         issue_event_type_name = json_data['issue_event_type_name']
         summary = json_data['issue']['fields']['summary']
         description = json_data['issue']['fields']['description']
-        assignee = json_data['issue']['fields']['assignee']['displayName'] if json_data['issue']['fields']['assignee'] else 'empty'
+
+        if json_data['issue']['fields']['priority']:
+            priority = json_data['issue']['fields']['priority']['name']
+        else:
+            priority = 'empty'
+
+        if json_data['issue']['fields']['assignee']:
+            assignee = json_data['issue']['fields']['assignee']['displayName']
+        else:
+            assignee = 'empty'
 
         if webevent.endswith('created'):
-            post_content = '##### ' + display_name + ' has created issue: [ ' + issue_id + ' ] ' + issue_url + '\n\n' \
-                           + summary + '\n\n> ' + description + '\n\n###### Priority: ' + priority + ', assignee: ' + assignee + '\r\n'
+            post_content = '##### ' + display_name + ' has created issue: [ ' \
+                           + issue_id + ' ] ' + issue_url + '\n\n' + summary + '\n\n> ' + description \
+                           + '\n\n###### Priority: ' + priority + ', assignee: ' + assignee + '\r\n'
         elif webevent.endswith('updated'):
-            post_content = '##### ' + display_name + ' has updated issue: [ ' + issue_id + ' ] ' + issue_url + '\n\n' \
-                           + summary + '\n\n###### Priority: ' + priority + ', assignee: ' + assignee + '\r\n'
+            post_content = '##### ' + display_name + ' has updated issue: [ ' \
+                           + issue_id + ' ] ' + issue_url + '\n\n' + summary + '\n\n###### Priority: ' \
+                           + priority + ', assignee: ' + assignee + '\r\n'
         elif webevent.endswith('deleted'):
-            post_content = '##### ' + display_name + ' has deleted issue: [ ' + issue_id + ' ] ' + issue_url + '\n\n' \
-                           + summary + '\n\n###### Priority: ' + priority + ', assignee: ' + assignee + '\r\n'
+            post_content = '##### ' + display_name + ' has deleted issue: [ ' \
+                           + issue_id + ' ] ' + issue_url + '\n\n' + summary + '\n\n###### Priority: ' \
+                           + priority + ', assignee: ' + assignee + '\r\n'
 
         if 'changelog' in json_data.keys():
             changed_items = json_data['changelog']['items']
@@ -75,6 +85,7 @@ def parse_event(json_data, post_content=''):
             elif issue_event_type_name in ('issue_comment_deleted',):
                 post_content += '\n##### Removed comment:\n\n' + comment
     else:
-        log('Skipped unhandled event: {}, {}'.format(json_data), save=DEBUG) if DEBUG else log('Skipped unhandled event.')
+        log('Skipped unhandled event: {}, {}'.format(json_data), save=DEBUG) if DEBUG else log(
+            'Skipped unhandled event.')
 
     return post_content
