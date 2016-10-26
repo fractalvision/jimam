@@ -36,16 +36,12 @@ def send(event, url):
 
 
 def parse_event(json_data, post_content=''):
-    get_url = re.compile(r'(.*?)\/rest\/api\/.*')
-    try:
+    if all(['webhookEvent' in json_data.keys(), 'issue' in json_data.keys()]):
         webevent = json_data['webhookEvent']
-    except:
-        return 'Wrong data'
-
-    if 'issue' in json_data.keys():
         display_name = json_data['user']['displayName']
         issue_id = json_data['issue']['key']
         issue_rest_url = json_data['issue']['self']
+        get_url = re.compile(r'(.*?)\/rest\/api\/.*')
         issue_url = '{}/browse/{}'.format(get_url.match(issue_rest_url).group(1), issue_id)
         priority = json_data['issue']['fields']['priority']['name'] if json_data['issue']['fields']['priority'] else 'empty'
         issue_event_type_name = json_data['issue_event_type_name']
@@ -61,8 +57,6 @@ def parse_event(json_data, post_content=''):
         elif webevent.endswith('deleted'):
             post_content = '##### ' + display_name + ' has deleted issue: [ ' + issue_id + ' ] ' + issue_url + '\n\n' \
                            + summary + '\n\n###### Priority: ' + priority + ', assignee: ' + assignee + '\r\n'
-        else:
-            log('unhandled event: {}, {}'.format(webevent, json_data), save=True)
 
         if 'changelog' in json_data.keys():
             changed_items = json_data['changelog']['items']
@@ -79,5 +73,7 @@ def parse_event(json_data, post_content=''):
                 post_content += '\n##### New comment:\n\n' + comment
             elif issue_event_type_name in ('issue_comment_deleted',):
                 post_content += '\n##### Removed comment:\n\n' + comment
+    else:
+        log('Skipped unhandled event: {}, {}'.format(json_data), save=DEBUG) if DEBUG else log('Skipped unhandled event.')
 
     return post_content
