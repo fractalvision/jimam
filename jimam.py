@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """JIMAM: Middleware API to convert incoming JIRA events
-into Mattermost format, and relay them to a target webhook"""
+into Mattermost format and relay them to a target webhook"""
 
 from api.core import *
 from flask import Flask, request
