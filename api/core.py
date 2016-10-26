@@ -79,7 +79,6 @@ def parse_event(json_data, post_content=''):
             elif issue_event_type_name in ('issue_comment_deleted',):
                 post_content += '\n##### Removed comment:\n\n' + comment
     else:
-        log('Skipped unhandled event: {}, {}'.format(json_data), save=DEBUG) if DEBUG else log(
-            'Skipped unhandled event.')
+        log('Skipped unhandled event: {}, {}'.format(json_data), save=DEBUG) if DEBUG else log('Skipped unhandled event.')
 
     return post_content
