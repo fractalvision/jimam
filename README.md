@@ -1,9 +1,9 @@
 ## JIMAM
-##### Middleware API to convert incoming JIRA events into Mattermost format and relay them to a target webhook.
+##### Lightweight middleware API to convert incoming JIRA issue-related events into Mattermost format and relay them to its target webhook.
 
 ###### Installation
 As it's quite preferable to run any service in a separate environment in order not to mess up the system libraries 
-it's better to install `virtualenv` first, if you don't have it already. 
+it's better to install [virtualenv](https://github.com/pypa/virtualenv 'virtualenv') first, if you don't have it already. 
 
 * `pip install virtualenv` 
 * make the environment folder `virtualenv env_name` 
@@ -14,7 +14,7 @@ it's better to install `virtualenv` first, if you don't have it already.
 ###### Configuration
 Set up the following variables in `/jimam/api/settings.py`, defaults are:
 
-* `DEBUG = True` debug flag for Flask, switch to `False` to run the app normally.
+* `DEBUG = True` switch to `False` to suppress excessive logging and tell Flask to run the app normally.
 * `JIMAM_USERNAME = 'JIMAM'` username to use while sending a message.
 * `JIMAM_IP = '127.0.0.1'` IP to run the API at.
 * `JIMAM_PORT = 8000` listening port.
