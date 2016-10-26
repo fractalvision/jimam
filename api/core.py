@@ -54,7 +54,7 @@ def parse_event(json_data, post_content=''):
                            + summary + '\n\n> ' + description + '\n\n###### Priority: ' + priority + ', assignee: ' + assignee + '\r\n'
         elif webevent.endswith('updated'):
             post_content = '##### ' + display_name + ' has updated issue: [ ' + issue_id + ' ] ' + issue_url + '\n\n' \
-                           + summary + '\n\n###### Priority: ' + priority + ', assignee: ' + assignee + '\r\n'
+                           + summary + '\n\n> ' + description + '\n\n###### Priority: ' + priority + ', assignee: ' + assignee + '\r\n'
         elif webevent.endswith('deleted'):
             post_content = '##### ' + display_name + ' has deleted issue: [ ' + issue_id + ' ] ' + issue_url + '\n\n' \
                            + summary + '\n\n###### Priority: ' + priority + ', assignee: ' + assignee + '\r\n'
