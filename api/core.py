@@ -46,11 +46,12 @@ def parse_event(json_data, post_content=''):
         priority = json_data['issue']['fields']['priority']['name'] if json_data['issue']['fields']['priority'] else 'empty'
         issue_event_type_name = json_data['issue_event_type_name']
         summary = json_data['issue']['fields']['summary']
+        description = json_data['issue']['fields']['description']
         assignee = json_data['issue']['fields']['assignee']['displayName'] if json_data['issue']['fields']['assignee'] else 'empty'
 
         if webevent.endswith('created'):
             post_content = '##### ' + display_name + ' has created issue: [ ' + issue_id + ' ] ' + issue_url + '\n\n' \
-                           + summary + '\n\n###### Priority: ' + priority + ', assignee: ' + assignee + '\r\n'
+                           + summary + '\n\n> ' + description + '\n\n###### Priority: ' + priority + ', assignee: ' + assignee + '\r\n'
         elif webevent.endswith('updated'):
             post_content = '##### ' + display_name + ' has updated issue: [ ' + issue_id + ' ] ' + issue_url + '\n\n' \
                            + summary + '\n\n###### Priority: ' + priority + ', assignee: ' + assignee + '\r\n'
