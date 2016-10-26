@@ -19,11 +19,12 @@ class Jimam(Resource):
         user_id, user_key = request.args.get('user_id') or 'absent', request.args.get('user_key') or 'absent'
         json_data = request.get_json(force=True)
         event = parse_event(json_data)
-        relayed = send(event, MATTERMOST_WEBHOOK)
-        if 'ConnectionError' in str(relayed):
-            log('Delivery failed! [{}]'.format(relayed), save=True)
-        else:
-            log('Bridged JIRA event from: ' + user_id + '\n', console=True)
+        if event:
+            relayed = send(event, MATTERMOST_WEBHOOK)
+            if 'ConnectionError' in str(relayed):
+                log('Delivery failed! [ {} ]'.format(relayed), save=DEBUG)
+            else:
+                log('Bridged JIRA event from: ' + user_id + '\n', save=DEBUG)
 
     def get(self):
         return 'JIMAM: JIRA to Mattermost translation API'
