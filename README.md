@@ -32,3 +32,5 @@ as WSGI-application using [Gunicorn](http://gunicorn.org/ 'Gunicorn') in case yo
 * Profit!
 
 Built using awesome [Flask-RESTful](https://github.com/flask-restful/flask-restful 'RESTful').
+
+© 2016. If you've found this app useful and somehow willing to thank the author, feel free to [donate](donate 'Thanks!').  
