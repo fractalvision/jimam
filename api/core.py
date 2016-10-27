@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 """JIMAM: API system routines"""
-
 from __future__ import print_function
 import datetime
 import re
@@ -49,14 +48,13 @@ def parse_event(json_data, post_content=''):
         issue_rest_url = json_data['issue']['self']
         get_url = re.compile(r'(.*?)\/rest\/api\/.*')
         issue_url = '{}/browse/{}'.format(get_url.match(issue_rest_url).group(1), issue_id)
-
-        try:
-            issue_event_type_name = json_data['issue_event_type_name']
-        except KeyError:
-            issue_event_type_name = None
-
         summary = json_data['issue']['fields']['summary']
         description = tag_users(json_data['issue']['fields']['description'])
+
+        if 'issue_event_type_name' in json_data.keys():
+            issue_event_type_name = json_data['issue_event_type_name']
+        else:
+            issue_event_type_name = None
 
         if json_data['issue']['fields']['priority']:
             priority = json_data['issue']['fields']['priority']['name']
@@ -93,6 +91,9 @@ def parse_event(json_data, post_content=''):
             elif issue_event_type_name in ('issue_comment_deleted',):
                 post_content += ''.join(['\n##### Removed comment:\n\n> ', comment])
     else:
-        log('Skipped unhandled event: {}, {}'.format(json_data), save=DEBUG) if DEBUG else log('Skipped unhandled event.')
+        if DEBUG:
+            log('Skipped unhandled event: {}, {}'.format(json_data), save=DEBUG)
+        else:
+            log('Skipped unhandled event.')
 
     return post_content

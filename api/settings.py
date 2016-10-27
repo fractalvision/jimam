@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 """JIMAM: API settings"""
-
 import os
 
 DEBUG = True
