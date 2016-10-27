@@ -3,10 +3,10 @@
 """JIMAM: Middleware API to convert incoming JIRA events
 into Mattermost format and relay them to a target webhook"""
 
-from api.core import *
 from flask import Flask, request
 from flask_restful import Api, Resource
 from werkzeug.contrib.fixers import ProxyFix
+from api.core import *
 
 __author__ = 'https://github.com/fractalvision/'
 
