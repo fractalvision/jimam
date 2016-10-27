@@ -63,11 +63,13 @@ def parse_event(json_data, post_content=''):
             assignee = 'empty'
 
         if webevent.endswith('created'):
-            post_content = '##### ' + display_name + ' has created issue: [ ' + issue_id + ' ] ' + issue_url + '\n\n' \
-                           + summary + '\n\n> ' + description + '\n\n###### Priority: ' + priority + ', assignee: ' + assignee + '\r\n'
+            post_content = ''.join(['##### ', display_name, ' has created issue: [ ', issue_id, ' ] ', issue_url,
+                                    '\n\n', summary + '\n\n> ', description, '\n\n###### Priority: ', priority,
+                                    ', assignee: ', assignee + '\r\n'])
         elif any([webevent.endswith('updated'), webevent.endswith('deleted')]):
-            post_content = '##### ' + display_name + ' has ' + webevent[-7:] + ' issue: [ ' + issue_id + ' ] ' \
-                           + issue_url + '\n\n' + summary + '\n\n###### Priority: ' + priority + ', assignee: ' + assignee + '\r\n'
+            post_content = ''.join(['##### ', display_name, ' has ', webevent[-7:], ' issue: [ ', issue_id, ' ] ',
+                                    issue_url, '\n\n', summary, '\n\n###### Priority: ', priority, ', assignee: ',
+                                    assignee, '\r\n'])
 
         if 'changelog' in json_data.keys():
             changed_items = json_data['changelog']['items']
@@ -81,9 +83,9 @@ def parse_event(json_data, post_content=''):
         if 'comment' in json_data.keys():
             comment = tag_users(json_data['comment']['body'])
             if issue_event_type_name in ('issue_commented',):
-                post_content += '\n##### New comment:\n\n' + comment
+                post_content += ''.join(['\n##### New comment:\n\n', comment])
             elif issue_event_type_name in ('issue_comment_deleted',):
-                post_content += '\n##### Removed comment:\n\n' + comment
+                post_content += ''.join(['\n##### Removed comment:\n\n', comment])
     else:
         log('Skipped unhandled event: {}, {}'.format(json_data), save=DEBUG) if DEBUG else log('Skipped unhandled event.')
 
