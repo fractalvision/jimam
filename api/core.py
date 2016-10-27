@@ -39,7 +39,7 @@ def parse_event(json_data, post_content=''):
         get_tag = re.compile(r'\W~(.*)](.*)')
         tag = lambda token: '@{}{}'.format(get_tag.match(token).group(1).lower(),
                                            get_tag.match(token).group(2)) if get_tag.search(token) else token
-        return ' '.join(map(tag, text.encode('utf8').split()))
+        return ' '.join(map(tag, text.split()))
 
     if all(['webhookEvent' in json_data.keys(), 'issue' in json_data.keys()]):
         webevent = json_data['webhookEvent']
