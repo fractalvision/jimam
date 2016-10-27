@@ -2,11 +2,12 @@
 """JIMAM: API system routines"""
 
 from __future__ import print_function
-from settings import *
-import sys
 import datetime
 import re
 import requests
+import sys
+from settings import *
+
 
 __author__ = 'https://github.com/fractalvision/'
 
@@ -48,7 +49,12 @@ def parse_event(json_data, post_content=''):
         issue_rest_url = json_data['issue']['self']
         get_url = re.compile(r'(.*?)\/rest\/api\/.*')
         issue_url = '{}/browse/{}'.format(get_url.match(issue_rest_url).group(1), issue_id)
-        issue_event_type_name = json_data['issue_event_type_name']
+
+        try:
+            issue_event_type_name = json_data['issue_event_type_name']
+        except KeyError:
+            issue_event_type_name = None
+
         summary = json_data['issue']['fields']['summary']
         description = tag_users(json_data['issue']['fields']['description'])
 
