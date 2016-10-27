@@ -65,10 +65,10 @@ def parse_event(json_data, post_content=''):
         if webevent.endswith('created'):
             post_content = ''.join(['##### ', display_name, ' has created issue: [ ', issue_id, ' ] (', issue_url,
                                     ')\n\n', summary, '\n\n> ', description, '\n\n###### Priority: ', priority,
-                                    '| Assignee: ', assignee, '\r\n'])
+                                    ' | Assignee: ', assignee, '\r\n'])
         elif any([webevent.endswith('updated'), webevent.endswith('deleted')]):
             post_content = ''.join(['##### ', display_name, ' has ', webevent[-7:], ' issue: [ ', issue_id, ' ] (',
-                                    issue_url, ')\n\n', summary, '\n\n###### Priority: ', priority, '| Assignee: ',
+                                    issue_url, ')\n\n', summary, '\n\n###### Priority: ', priority, ' | Assignee: ',
                                     assignee, '\r\n'])
 
         if 'changelog' in json_data.keys():
