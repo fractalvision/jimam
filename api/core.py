@@ -78,7 +78,7 @@ def parse_event(json_data, post_content=''):
                 for field, value in item.iteritems():
                     if field in ('fromString', 'toString'):
                         value = value or 'empty'
-                        post_content += ''.join([value, ' > ' if field.startswith('from') else '' + '\n\n'])
+                        post_content += ''.join([value, ' > ' if field.startswith('from') else '', '\n\n'])
 
         if 'comment' in json_data.keys():
             comment = tag_users(json_data['comment']['body'])
