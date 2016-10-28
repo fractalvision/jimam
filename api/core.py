@@ -110,4 +110,4 @@ def parse_event(json_data):
             else:
                 log('Skipped unhandled event.')
 
-    return str(post_content.getvalue())
+        return str(post_content.getvalue())
