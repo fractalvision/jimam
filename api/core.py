@@ -110,4 +110,4 @@ def parse_event(json_data):
             else:
                 log('Skipped unhandled event.')
 
-        return map(lambda line: line.encode('utf8'), post_content.getvalue())
+        return post_content.getvalue().encode('utf8')
