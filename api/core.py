@@ -42,7 +42,7 @@ def parse_event(json_data, post_content=[]):
         return ' '.join(map(tag, text.split())) if text else text
 
     def _fmt(text):
-        text = text.encode('uft8')
+        text = text.encode('uft-8')
         get_fmt = re.compile(r'\s?({.*?})\s?')
         fmt = get_fmt.match(text).group(1) if get_fmt.match(text) else text
         return text.replace('{} '.format(fmt),
