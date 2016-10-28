@@ -91,7 +91,7 @@ def parse_event(json_data):
                     post_content.write(''.join(['\n##### Changed: ', item['field'].upper()]))
                     for field, value in item.iteritems():
                         if field in ('fromString', 'toString'):
-                            value = value or 'empty'
+                            value = _tag_users(_fmt(value)) or 'empty'
                             if item['field'] in ('summary', 'description'):
                                 post_content.write(''.join(['\n\n> ', value if field.startswith('to') else '', '\n\n']))
                             else:
