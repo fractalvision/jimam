@@ -35,11 +35,17 @@ def send(event, url):
 
 
 def parse_event(json_data, post_content=[]):
-    def tag_users(text):
+    def _tag_users(text):
         get_tag = re.compile(r'\W~(.*)](.*)')
         tag = lambda token: '@{}{}'.format(get_tag.match(token).group(1).lower(),
                                            get_tag.match(token).group(2)) if get_tag.search(token) else token
         return ' '.join(map(tag, text.split())) if text else text
+
+    def _fmt(text):
+        get_fmt = re.compile(r'\s?({.*?})\s?')
+        fmt = get_fmt.match(text).group(1) if get_fmt.match(text) else text
+        return text.replace('{} '.format(fmt),
+                            '{}'.format(fmt)).replace(' {}'.format(fmt), '{} '.format(fmt))
 
     if all(['webhookEvent' in json_data.keys(), 'issue' in json_data.keys()]):
         webevent = json_data['webhookEvent']
@@ -49,7 +55,7 @@ def parse_event(json_data, post_content=[]):
         get_url = re.compile(r'(.*?)\/rest\/api\/.*')
         issue_url = '{}/browse/{}'.format(get_url.match(issue_rest_url).group(1), issue_id)
         summary = json_data['issue']['fields']['summary']
-        description = tag_users(json_data['issue']['fields']['description'])
+        description = _tag_users(_fmt(json_data['issue']['fields']['description']))
 
         if 'issue_event_type_name' in json_data.keys():
             issue_event_type_name = json_data['issue_event_type_name']
@@ -89,7 +95,7 @@ def parse_event(json_data, post_content=[]):
                                                          value, ' > ' if field.startswith('from') else ' ]\n']))
 
         if 'comment' in json_data.keys():
-            comment = tag_users(json_data['comment']['body'])
+            comment = _tag_users(_fmt(json_data['comment']['body']))
             if issue_event_type_name in ('issue_commented',):
                 post_content.append(''.join(['\n##### New comment:\n\n> ', comment, '\n\n']))
             elif issue_event_type_name in ('issue_comment_deleted',):
