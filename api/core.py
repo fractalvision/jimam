@@ -42,6 +42,7 @@ def parse_event(json_data, post_content=[]):
         return ' '.join(map(tag, text.split())) if text else text
 
     def _fmt(text):
+        text = text.encode('uft8')
         get_fmt = re.compile(r'\s?({.*?})\s?')
         fmt = get_fmt.match(text).group(1) if get_fmt.match(text) else text
         return text.replace('{} '.format(fmt),
@@ -90,8 +91,10 @@ def parse_event(json_data, post_content=[]):
                         value = value or 'empty'
                         if item['field'] in ('summary', 'description'):
                             post_content.append(''.join(['\n\n> ', value if field.startswith('to') else '', '\n\n']))
-                        post_content.append(''.join([' [ ' if field.startswith('from') else '',
-                                                     value, ' > ' if field.startswith('from') else ' ]\n']))
+                        else:
+                            post_content.append(''.join([' [ ' if field.startswith('from') else '',
+                                                         value, ' > ' if field.startswith('from') else ' ]\n']))
+                            continue
 
         if 'comment' in json_data.keys():
             comment = _tag_users(_fmt(json_data['comment']['body']))
