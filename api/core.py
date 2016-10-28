@@ -37,9 +37,9 @@ def send(event, url):
 def parse_event(json_data, post_content=''):
     def _tag_users(text):
         get_tag = re.compile(r'\W~(.*)](.*)')
-        tag = lambda token: get_tag.search(token) and '@%s%s' % (get_tag.match(token).group(1).lower(),
-                                                                 get_tag.match(token).group(2))
-        return text or ' '.join(map(tag, text.split()))
+        tag = lambda token: '@%s%s' % (get_tag.match(token).group(1).lower(),
+                                       get_tag.match(token).group(2)) if get_tag.search(token) else token
+        return ' '.join(map(tag, text.split())) if text else text
 
     if all(['webhookEvent' in json_data.keys(), 'issue' in json_data.keys()]):
         webevent = json_data['webhookEvent']

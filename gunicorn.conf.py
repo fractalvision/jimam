@@ -21,7 +21,7 @@ from api.settings import *
 #       range.
 #
 
-bind = '{}:{}'.format(JIMAM_IP, int(os.getenv('PORT', JIMAM_PORT)))
+bind = '%s:%s' % (JIMAM_IP, int(os.getenv('PORT', JIMAM_PORT)))
 backlog = int(os.getenv('GUNICORN_BACKLOG', 2048))
 
 #

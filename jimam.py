@@ -21,14 +21,14 @@ class Jimam(Resource):
         if event:
             relayed = send(event, MATTERMOST_WEBHOOK)
             if 'ConnectionError' in str(relayed):
-                log('Delivery failed! [ {} ]'.format(relayed), save=DEBUG)
+                log('Delivery failed! [ %s ]' % relayed, save=DEBUG)
             else:
                 log('Bridged JIRA event from: ' + user_id + '\n', save=DEBUG)
 
     def get(self):
         return 'JIMAM: JIRA to Mattermost translation API'
 
-api.add_resource(Jimam, '/jimam{}'.format(API_ROOT))
+api.add_resource(Jimam, '/jimam%s' % API_ROOT)
 
 app.wsgi_app = ProxyFix(app.wsgi_app)
 if __name__ == '__main__':
