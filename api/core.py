@@ -83,7 +83,7 @@ def parse_event(json_data, post_content=[]):
                     if field in ('fromString', 'toString'):
                         value = value or 'empty'
                         if item['field'] in ('summary', 'description'):
-                            post_content.append(''.join(['\n\n> ', value, '\n\n']))
+                            post_content.append(''.join(['\n\n> ', value if field.startswith('to') else '', '\n\n']))
                         else:
                             post_content.append(''.join([' [ ' if field.startswith('from') else '',
                                                          value, ' > ' if field.startswith('from') else ' ]\n']))
