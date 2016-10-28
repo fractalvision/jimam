@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """JIMAM: API system routines"""
 from __future__ import print_function
+from contextlib import closing
 import datetime
 import re
 import requests
@@ -49,7 +50,7 @@ def parse_event(json_data):
         return text.replace('{} '.format(fmt),
                             '{}'.format(fmt)).replace(' {}'.format(fmt), '{} '.format(fmt))
 
-    with StringIO() as post_content:
+    with closing(StringIO()) as post_content:
         if all(['webhookEvent' in json_data.keys(), 'issue' in json_data.keys()]):
             webevent = json_data['webhookEvent']
             display_name = json_data['user']['displayName']
