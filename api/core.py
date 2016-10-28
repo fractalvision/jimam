@@ -68,12 +68,12 @@ def parse_event(json_data, post_content=[]):
 
         if webevent.endswith('created'):
             post_content.append(''.join(['##### ', display_name, ' has created issue: [', issue_id, '](', issue_url,
-                                    ')\n\n', summary, '\n\n> ', description, '\n\n###### Priority: ', priority,
-                                    ' | Assignee: ', assignee, '\r\n']))
+                                         ')\n\n', summary, '\n\n> ', description, '\n\n###### Priority: ', priority,
+                                         ' | Assignee: ', assignee, '\r\n']))
         elif any([webevent.endswith('updated'), webevent.endswith('deleted')]):
             post_content.append(''.join(['##### ', display_name, ' has ', webevent[-7:], ' issue: [', issue_id, '](',
-                                    issue_url, ')\n\n', summary, '\n\n###### Priority: ', priority, ' | Assignee: ',
-                                    assignee, '\r\n']))
+                                         issue_url, ')\n\n', summary, '\n\n###### Priority: ', priority, ' | Assignee: ',
+                                         assignee, '\r\n']))
 
         if 'changelog' in json_data.keys():
             changed_items = json_data['changelog']['items']
@@ -85,7 +85,8 @@ def parse_event(json_data, post_content=[]):
                         if item['field'] in ('summary', 'description'):
                             post_content.append(''.join(['\n\n> ', value, '\n\n']))
                         else:
-                            post_content.append(''.join([' [ ', value, ' > ' if field.startswith('from') else ' ]\n']))
+                            post_content.append(''.join([' [ ' if field.startswith('from') else '',
+                                                         value, ' > ' if field.startswith('from') else ' ]\n']))
 
         if 'comment' in json_data.keys():
             comment = tag_users(json_data['comment']['body'])
