@@ -42,7 +42,7 @@ def parse_event(json_data, post_content=[]):
         return ' '.join(map(tag, text.split())) if text else text
 
     def _fmt(text):
-        text = text.encode('utf8')
+        text = text and text.encode('utf8')
         get_fmt = re.compile(r'\s?({.*?})\s?')
         fmt = get_fmt.match(text).group(1) if get_fmt.match(text) else text
         return text.replace('{} '.format(fmt),
@@ -108,4 +108,4 @@ def parse_event(json_data, post_content=[]):
         else:
             log('Skipped unhandled event.')
 
-    return ''.join(map(str, post_content))
+    return ''.join(map(unicode, post_content))
