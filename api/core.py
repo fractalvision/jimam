@@ -41,11 +41,6 @@ def parse_event(json_data, post_content=''):
                                        get_tag.match(token).group(2)) if get_tag.search(token) else token
         return ' '.join(map(tag, text.split())) if text else text
 
-    def _fmt(text):
-        get_fmt = re.compile(r'\s?({.*?})\s?')
-        fmt = text and get_fmt.match(text) and get_fmt.match(text).group(1)
-        return text.replace('%s ' % fmt, '%s' % fmt).replace(' %s' % fmt, '%s ' % fmt) if fmt else text
-
     if all(['webhookEvent' in json_data.keys(), 'issue' in json_data.keys()]):
         webevent = json_data['webhookEvent']
         display_name = json_data['user']['displayName']
@@ -54,7 +49,7 @@ def parse_event(json_data, post_content=''):
         get_url = re.compile(r'(.*?)\/rest\/api\/.*')
         issue_url = '%s/browse/%s' % (get_url.match(issue_rest_url).group(1), issue_id)
         summary = json_data['issue']['fields']['summary']
-        description = _tag_users(_fmt(json_data['issue']['fields']['description']))
+        description = _tag_users(json_data['issue']['fields']['description'])
 
         if 'issue_event_type_name' in json_data.keys():
             issue_event_type_name = json_data['issue_event_type_name']
@@ -86,7 +81,7 @@ def parse_event(json_data, post_content=''):
                 post_content += (''.join(['\n##### Changed: ', item['field'].upper()]))
                 for field, value in item.iteritems():
                     if field in ('fromString', 'toString'):
-                        value = value and _tag_users(_fmt(value)) or 'empty'
+                        value = value and _tag_users(value) or 'empty'
                         if item['field'] in ('summary', 'description'):
                             post_content += ''.join(['\n\n> ', value if field.startswith('to') else '', '\n\n'])
                         else:
@@ -94,7 +89,7 @@ def parse_event(json_data, post_content=''):
                                                      value, ' > ' if field.startswith('from') else ' ]\n'])
 
         if 'comment' in json_data.keys():
-            comment = _tag_users(_fmt(json_data['comment']['body']))
+            comment = _tag_users(json_data['comment']['body'])
             if issue_event_type_name in ('issue_commented',):
                 post_content += ''.join(['\n##### New comment:\n\n> ', comment, '\n\n'])
 
