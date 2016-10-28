@@ -83,7 +83,7 @@ def parse_event(json_data, post_content=[]):
                                          assignee, '\r\n']))
 
         if 'changelog' in json_data.keys():
-            changed_items = json_data['changelog']['items']
+            changed_items = json_data['changelog']['items'].encode('utf8')
             for item in changed_items:
                 post_content.append(''.join(['\n##### Changed: ', item['field'].upper()]))
                 for field, value in item.iteritems():
@@ -97,7 +97,7 @@ def parse_event(json_data, post_content=[]):
                             continue
 
         if 'comment' in json_data.keys():
-            comment = _tag_users(_fmt(json_data['comment']['body']))
+            comment = _tag_users(_fmt(json_data['comment']['body'])).encode('utf8')
             if issue_event_type_name in ('issue_commented',):
                 post_content.append(''.join(['\n##### New comment:\n\n> ', comment, '\n\n']))
             elif issue_event_type_name in ('issue_comment_deleted',):
@@ -108,4 +108,4 @@ def parse_event(json_data, post_content=[]):
         else:
             log('Skipped unhandled event.')
 
-    return ''.join(post_content)
+    return ''.join(map(lambda line: line.encode('utf8'), post_content))
