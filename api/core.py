@@ -43,8 +43,8 @@ def parse_event(json_data, post_content=''):
 
     def _fmt(text):
         get_fmt = re.compile(r'\s?({.*?})\s?')
-        fmt = text or get_fmt.match(text).group(1)
-        return text.replace('%s ' % fmt, '%s' % fmt).replace(' %s' % fmt, '%s ' % fmt) if text else text
+        fmt = text and get_fmt.match(text) and get_fmt.match(text).group(1)
+        return text.replace('%s ' % fmt, '%s' % fmt).replace(' %s' % fmt, '%s ' % fmt) if fmt else text
 
     if all(['webhookEvent' in json_data.keys(), 'issue' in json_data.keys()]):
         webevent = json_data['webhookEvent']
@@ -52,7 +52,7 @@ def parse_event(json_data, post_content=''):
         issue_id = json_data['issue']['key']
         issue_rest_url = json_data['issue']['self']
         get_url = re.compile(r'(.*?)\/rest\/api\/.*')
-        issue_url = '{}/browse/{}'.format(get_url.match(issue_rest_url).group(1), issue_id)
+        issue_url = '%s/browse/%s' % (get_url.match(issue_rest_url).group(1), issue_id)
         summary = json_data['issue']['fields']['summary']
         description = _tag_users(_fmt(json_data['issue']['fields']['description']))
 
