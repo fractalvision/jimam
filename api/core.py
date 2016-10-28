@@ -34,7 +34,7 @@ def send(event, url):
         return e
 
 
-def parse_event(json_data, post_content=[]):
+def parse_event(json_data, post_content=''):
     def _tag_users(text):
         get_tag = re.compile(r'\W~(.*)](.*)')
         tag = lambda token: '@%s%s' % (get_tag.match(token).group(1).lower(),
@@ -43,7 +43,7 @@ def parse_event(json_data, post_content=[]):
 
     def _fmt(text):
         get_fmt = re.compile(r'\s?({.*?})\s?')
-        fmt = get_fmt.match(text).group(1) if get_fmt.match(text) else text
+        fmt = text and get_fmt.match(text).group(1)
         return text.replace('%s ' % fmt, '%s' % fmt).replace(' %s' % fmt, '%s ' % fmt)
 
     if all(['webhookEvent' in json_data.keys(), 'issue' in json_data.keys()]):
@@ -72,33 +72,33 @@ def parse_event(json_data, post_content=[]):
             assignee = 'empty'
 
         if webevent.endswith('created'):
-            post_content.append(''.join(['\n##### ', display_name, ' has created issue: [', issue_id, '](', issue_url,
-                                         ')\n\n', summary, '\n\n> ', description, '\n\n###### Priority: ', priority,
-                                         ' | Assignee: ', assignee, '\r\n']))
+            post_content = ''.join(['\n##### ', display_name, ' has created issue: [', issue_id, '](', issue_url,
+                                    ')\n\n', summary, '\n\n> ', description, '\n\n###### Priority: ', priority,
+                                    ' | Assignee: ', assignee, '\r\n'])
         elif any([webevent.endswith('updated'), webevent.endswith('deleted')]):
-            post_content.append(''.join(['\n##### ', display_name, ' has ', webevent[-7:], ' issue: [', issue_id, '](',
-                                         issue_url, ')\n\n', summary, '\n\n###### Priority: ', priority, ' | Assignee: ',
-                                         assignee, '\r\n']))
+            post_content = ''.join(['\n##### ', display_name, ' has ', webevent[-7:], ' issue: [', issue_id, '](',
+                                    issue_url, ')\n\n', summary, '\n\n###### Priority: ', priority, ' | Assignee: ',
+                                    assignee, '\r\n'])
 
         if 'changelog' in json_data.keys():
             changed_items = json_data['changelog']['items']
             for item in changed_items:
-                post_content.append(''.join(['\n##### Changed: ', item['field'].upper()]))
+                post_content += (''.join(['\n##### Changed: ', item['field'].upper()]))
                 for field, value in item.iteritems():
                     if field in ('fromString', 'toString'):
                         value = value and _tag_users(_fmt(value)) or 'empty'
                         if item['field'] in ('summary', 'description'):
-                            post_content.append(''.join(['\n\n> ', value if field.startswith('to') else '', '\n\n']))
+                            post_content += ''.join(['\n\n> ', value if field.startswith('to') else '', '\n\n'])
                         else:
-                            post_content.append(''.join([' [ ' if field.startswith('from') else '',
-                                                        value, ' > ' if field.startswith('from') else ' ]\n']))
+                            post_content += ''.join([' [ ' if field.startswith('from') else '',
+                                                     value, ' > ' if field.startswith('from') else ' ]\n'])
 
         if 'comment' in json_data.keys():
             comment = _tag_users(_fmt(json_data['comment']['body']))
             if issue_event_type_name in ('issue_commented',):
-                post_content.append(''.join(['\n##### New comment:\n\n> ', comment, '\n\n']))
+                post_content += ''.join(['\n##### New comment:\n\n> ', comment, '\n\n'])
             elif issue_event_type_name in ('issue_comment_deleted',):
-                post_content.append(''.join(['\n##### Removed comment:\n\n> ', comment, '\n\n']))
+                post_content += ''.join(['\n##### Removed comment:\n\n> ', comment, '\n\n'])
     else:
         if DEBUG:
             log('Skipped unhandled event: {}, {}'.format(json_data), save=DEBUG)
