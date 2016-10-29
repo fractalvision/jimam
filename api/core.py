@@ -43,25 +43,21 @@ def parse_event(json_data, post_content=''):
 
     if all(['webhookEvent' in json_data.keys(), 'issue' in json_data.keys()]):
         webevent = json_data['webhookEvent']
-        display_name = json_data['user']['displayName']
+        display_name = json_data.get['user'].get('displayName') if json_data.get('user') else 'System'
         issue_id = json_data['issue']['key']
         issue_rest_url = json_data['issue']['self']
         get_url = re.compile(r'(.*?)\/rest\/api\/.*')
         issue_url = '%s/browse/%s' % (get_url.match(issue_rest_url).group(1), issue_id)
-        summary = json_data['issue']['fields']['summary']
-        description = _tag_users(json_data['issue']['fields']['description'])
+        summary = json_data['issue']['fields'].get('summary', '')
+        description = _tag_users(json_data['issue']['fields'].get('description', ''))
+        issue_event_type_name = json_data.get('issue_event_type_name', '')
 
-        if 'issue_event_type_name' in json_data.keys():
-            issue_event_type_name = json_data['issue_event_type_name']
-        else:
-            issue_event_type_name = None
-
-        if json_data['issue']['fields']['priority']:
+        if json_data['issue']['fields'].get('priority'):
             priority = json_data['issue']['fields']['priority']['name']
         else:
             priority = 'empty'
 
-        if json_data['issue']['fields']['assignee']:
+        if json_data['issue']['fields'].get('assignee'):
             assignee = json_data['issue']['fields']['assignee']['displayName']
         else:
             assignee = 'empty'
@@ -81,7 +77,7 @@ def parse_event(json_data, post_content=''):
                 post_content += (''.join(['\n##### Changed: ', item['field'].upper()]))
                 for field, value in item.iteritems():
                     if field in ('fromString', 'toString'):
-                        value = value and _tag_users(value) or 'empty'
+                        value = _tag_users(value) if value else 'empty'
                         if item['field'] in ('summary', 'description'):
                             post_content += ''.join(['\n\n> ', value if field.startswith('to') else '', '\n\n'])
                         else:
