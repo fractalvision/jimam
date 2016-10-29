@@ -43,7 +43,7 @@ def parse_event(json_data, post_content=''):
 
     if all(['webhookEvent' in json_data.keys(), 'issue' in json_data.keys()]):
         webevent = json_data['webhookEvent']
-        display_name = json_data.get['user'].get('displayName') if json_data.get('user') else 'System'
+        display_name = json_data.get('user') and json_data['user'].get('displayName') or 'System'
         issue_id = json_data['issue']['key']
         issue_rest_url = json_data['issue']['self']
         get_url = re.compile(r'(.*?)\/rest\/api\/.*')
