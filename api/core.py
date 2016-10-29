@@ -37,7 +37,7 @@ def send(event, url):
 def parse_event(json_data, post_content=''):
     def _tag_users(text):
         get_tag = re.compile(r'\W~(.*)](.*)')
-        tag = lambda token: '@%s%s' % (get_tag.match(token).group(1).lower(),
+        tag = lambda token: '@%s%s' % (get_tag.match(token).group(1).lower() if get_tag.search(token) else token,
                                        get_tag.match(token).group(2)) if get_tag.search(token) else token
         return ' '.join(map(tag, text.split())) if text else text
 
