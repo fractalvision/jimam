@@ -73,7 +73,7 @@ def parse_event(json_data, post_content=''):
                 field = item['field']
                 from_value = item['fromString'] and _tag_users(item['fromString']) or 'empty'
                 to_value = item['toString'] and _tag_users(item['toString']) or 'empty'
-                post_content += (''.join(['\n##### Changed: ', field.upper()]))
+                post_content += ''.join(['\n##### Changed: ', field.upper()])
                 if field in ('summary', 'description'):
                     post_content += ''.join(['\n\n> ', to_value or '', '\n'])
                 else:
