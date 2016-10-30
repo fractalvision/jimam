@@ -70,12 +70,12 @@ def parse_event(json_data, post_content=''):
         if 'changelog' in json_data.keys():
             changed_items = json_data['changelog']['items']
             for item in changed_items:
-                field = item['field'].upper()
+                field = item['field']
                 from_value = item['fromString'] and _tag_users(item['fromString']) or 'empty'
                 to_value = item['toString'] and _tag_users(item['toString']) or 'empty'
-                post_content += (''.join(['\n##### Changed: ', field]))
+                post_content += (''.join(['\n##### Changed: ', field.upper()]))
                 if field in ('summary', 'description'):
-                    post_content += ''.join(['\n\n> ', to_value or '', '\n\n'])
+                    post_content += ''.join(['\n\n> ', to_value or '', '\n'])
                 else:
                     post_content += ''.join([' [ ', from_value, ' > ', to_value, ' ]'])
 
