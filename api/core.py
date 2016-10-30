@@ -17,13 +17,13 @@ except OSError:
         raise
 
 
-def log(event, console=True, save=False):
+def log(info, console=True, save=False):
     now = str(datetime.datetime.now())[:19]
     if console:
-        print('\n%s >>> %s\n' % (now, event), file=sys.stderr)
+        print('\n%s >>> %s\n' % (now, info), file=sys.stderr)
     if save:
         with open(LOG_FILE, 'a+') as log_file:
-            print('\n%s >>> %s\n' % (now, event), file=log_file)
+            print('\n%s >>> %s\n' % (now, info), file=log_file)
 
 
 def send(event, url):
@@ -86,7 +86,7 @@ def parse_event(json_data, post_content=''):
 
     else:
         if DEBUG:
-            log('Skipped unhandled event: %s, %s' % json_data, save=DEBUG)
+            log('Skipped unhandled event: %s' % json_data, save=DEBUG)
         else:
             log('Skipped unhandled event.')
 
