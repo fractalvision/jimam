@@ -86,7 +86,7 @@ def parse_event(json_data, post_content=''):
 
     else:
         if DEBUG:
-            log('Skipped unhandled event: {}, {}'.format(json_data), save=DEBUG)
+            log('Skipped unhandled event: %s, %s' % json_data, save=DEBUG)
         else:
             log('Skipped unhandled event.')
 
