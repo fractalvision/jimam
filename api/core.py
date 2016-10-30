@@ -52,15 +52,11 @@ def parse_event(json_data, post_content=''):
         description = _tag_users(json_data['issue']['fields'].get('description', ''))
         issue_event_type_name = json_data.get('issue_event_type_name', '')
 
-        if json_data['issue']['fields'].get('priority'):
-            priority = json_data['issue']['fields']['priority']['name']
-        else:
-            priority = 'empty'
+        priority = (json_data['issue']['fields'].get('priority') and
+                    json_data['issue']['fields']['priority']['name'] or 'empty')
 
-        if json_data['issue']['fields'].get('assignee'):
-            assignee = json_data['issue']['fields']['assignee']['displayName']
-        else:
-            assignee = 'empty'
+        assignee = (json_data['issue']['fields'].get('assignee') and
+                    json_data['issue']['fields']['assignee']['displayName'] or 'empty')
 
         if webevent.endswith('created'):
             post_content = ''.join(['\n##### ', display_name, ' has created issue: [', issue_id, '](', issue_url,
