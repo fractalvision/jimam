@@ -59,13 +59,15 @@ def parse_event(json_data, post_content=''):
                     json_data['issue']['fields']['assignee']['displayName'] or 'empty')
 
         if webevent.endswith('created'):
-            post_content = ''.join(['\n##### ', display_name, ' has created issue: [', issue_id, '](', issue_url,
-                                    ')\n\n', summary, '\n\n> ', description, '\n\n###### Priority: ', priority,
-                                    ' | Assignee: ', assignee, '\r\n'])
+            post_content = ('\n##### %s has created issue: [%s](%s)\n\n'
+                            '%s\n\n> %s\n\n'
+                            '###### Priority: %s | Assignee: %s\r\n') % (display_name, issue_id, issue_url,
+                                                                         summary, description, priority, assignee)
+
         elif any([webevent.endswith('updated'), webevent.endswith('deleted')]):
-            post_content = ''.join(['\n##### ', display_name, ' has ', webevent[-7:], ' issue: [', issue_id, '](',
-                                    issue_url, ')\n\n', summary, '\n\n###### Priority: ', priority, ' | Assignee: ',
-                                    assignee, '\r\n'])
+            post_content = ('\n##### %s has %s issue: [%s](%s)\n\n'
+                            '%s\n\n###### Priority: %s | Assignee: %s\r\n') % (display_name, webevent[-7:], issue_id,
+                                                                               issue_url, summary, priority, assignee)
 
         if 'changelog' in json_data.keys():
             changed_items = json_data['changelog']['items']
@@ -73,11 +75,11 @@ def parse_event(json_data, post_content=''):
                 field = item['field']
                 from_value = item['fromString'] and _tag_users(item['fromString']) or 'empty'
                 to_value = item['toString'] and _tag_users(item['toString']) or 'empty'
-                post_content += ''.join(['\n##### Changed: ', field.upper()])
+                post_content += '\n##### Changed: %s ' % field.upper()
                 if field in ('summary', 'description'):
-                    post_content += ''.join(['\n\n> ', to_value or '', '\n'])
+                    post_content += '\n\n> %s\n' % to_value or ''
                 else:
-                    post_content += ''.join([' [ ', from_value, ' > ', to_value, ' ]'])
+                    post_content += '[ %s > %s ]' % (from_value, to_value)
 
         if 'comment' in json_data.keys():
             comment = _tag_users(json_data['comment']['body'])
