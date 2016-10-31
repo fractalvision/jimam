@@ -75,11 +75,11 @@ def parse_event(json_data, post_content=''):
                 field = item['field']
                 from_value = item['fromString'] and _tag_users(item['fromString']) or 'empty'
                 to_value = item['toString'] and _tag_users(item['toString']) or 'empty'
-                post_content += '\n##### Changed: %s ' % field.upper()
+                post_content += '\n##### %s: ' % field.upper()
                 if field in ('summary', 'description'):
-                    post_content += '\n\n> %s\n' % to_value or ''
+                    post_content += '\n\n> %s\n' % to_value
                 else:
-                    post_content += '[ %s > %s ]' % (from_value, to_value)
+                    post_content += '~~%s~~ %s' % (from_value, to_value)
 
         if 'comment' in json_data.keys():
             comment = _tag_users(json_data['comment']['body'])
