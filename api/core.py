@@ -84,12 +84,12 @@ def parse_event(json_data, post_content=''):
         if 'comment' in json_data.keys():
             comment = _tag_users(json_data['comment']['body'])
             if issue_event_type_name in ('issue_commented',):
-                post_content += ''.join(['\n##### New comment:\n\n> ', comment, '\n\n'])
+                post_content += '\n##### New comment:\n\n> %s\n\n' % comment
 
     else:
         if DEBUG:
-            log('Skipped unhandled event: %s' % json_data, save=DEBUG)
+            log('Skipped. Raw: %s' % json_data, save=DEBUG)
         else:
-            log('Skipped unhandled event.')
+            log('Do not want this. Skipped.')
 
     return post_content
