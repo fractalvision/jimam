@@ -59,7 +59,7 @@ def parse_event(json_data, post_content=''):
         issue_rest_url = json_data['issue']['self']
         get_url = re.compile(r'(.*?)\/rest\/api\/.*')
         issue_url = '%s/browse/%s' % (get_url.match(issue_rest_url).group(1), issue_id)
-        summary = json_data['issue']['fields'].get('summary', '')
+        summary = _tag_users(_tag_files(_unfmt(json_data['issue']['fields'].get('summary', ''))))
         description = _tag_users(_tag_files(_unfmt(json_data['issue']['fields'].get('description', ''))))
         issue_event_type_name = json_data.get('issue_event_type_name', '')
 
