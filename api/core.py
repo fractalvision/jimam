@@ -36,10 +36,21 @@ def send(event, url):
 
 def parse_event(json_data, post_content=''):
     def _tag_users(text):
-        get_tag = re.compile(r'\W~(.*)](.*)')
-        tag = lambda token: '@%s%s' % (get_tag.match(token).group(1).lower() if get_tag.search(token) else token,
-                                       get_tag.match(token).group(2)) if get_tag.search(token) else token
-        return ' '.join(map(tag, text.split())) if text else text
+        get_tag = re.compile(r'\[\~(.*?)](.*)')
+        tag = lambda token: get_tag.search(token) and '@%s%s' % (get_tag.search(token).group(1).lower(),
+                                                                 get_tag.search(token).group(2).lower()) or token
+        return text and ' '.join(map(tag, text.split()))
+
+    def _tag_files(text):
+        get_tag = re.compile(r'\[\^(.*?)](.*)')
+        tag = lambda token: get_tag.search(token) and 'file: %s%s' % (get_tag.search(token).group(1).lower(),
+                                                                      get_tag.search(token).group(2).lower()) or token
+        return text and ' '.join(map(tag, text.split()))
+
+    def _unfmt(text):
+        get_tag = re.compile(r'{(.*?)}')
+        tag = lambda token: '' if get_tag.search(token) and get_tag.search(token).group(1) else token
+        return text and ' '.join(map(tag, text.split()))
 
     if all(['webhookEvent' in json_data.keys(), 'issue' in json_data.keys()]):
         webevent = json_data['webhookEvent']
@@ -49,7 +60,7 @@ def parse_event(json_data, post_content=''):
         get_url = re.compile(r'(.*?)\/rest\/api\/.*')
         issue_url = '%s/browse/%s' % (get_url.match(issue_rest_url).group(1), issue_id)
         summary = json_data['issue']['fields'].get('summary', '')
-        description = _tag_users(json_data['issue']['fields'].get('description', ''))
+        description = _tag_users(_tag_files(_unfmt(json_data['issue']['fields'].get('description', ''))))
         issue_event_type_name = json_data.get('issue_event_type_name', '')
 
         priority = (json_data['issue']['fields'].get('priority') and
@@ -73,8 +84,8 @@ def parse_event(json_data, post_content=''):
             changed_items = json_data['changelog']['items']
             for item in changed_items:
                 field = item['field']
-                from_value = item['fromString'] and _tag_users(item['fromString']) or 'empty'
-                to_value = item['toString'] and _tag_users(item['toString']) or 'empty'
+                from_value = item['fromString'] and _tag_users(_tag_files(_unfmt(item['fromString']))) or 'empty'
+                to_value = item['toString'] and _tag_users(_tag_files(_unfmt(item['toString']))) or 'empty'
                 post_content += '\n##### %s: ' % field.upper()
                 if field in ('summary', 'description'):
                     post_content += '\n\n> %s\n' % to_value
@@ -82,7 +93,7 @@ def parse_event(json_data, post_content=''):
                     post_content += '~~%s~~ %s' % (from_value, to_value)
 
         if 'comment' in json_data.keys():
-            comment = _tag_users(json_data['comment']['body'])
+            comment = _tag_users(_tag_files(_unfmt(json_data['comment']['body'])))
             if issue_event_type_name in ('issue_commented',):
                 post_content += '\n##### New comment:\n\n> %s\n\n' % comment
 
