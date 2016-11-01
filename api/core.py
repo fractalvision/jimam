@@ -49,7 +49,7 @@ def parse_event(json_data, post_content=''):
 
     def _unfmt(text):
         get_tag = re.compile(r'{(.*?)}')
-        tag = lambda token: '' if get_tag.search(token) and get_tag.search(token).group(1) else token
+        tag = lambda token: '```' if get_tag.search(token) and get_tag.search(token).group(1) else token
         return text and ' '.join(map(tag, text.split()))
 
     if all(['webhookEvent' in json_data.keys(), 'issue' in json_data.keys()]):
